@@ -73,7 +73,7 @@ Double-click `run.bat`. It starts the analytics API (port 8000) and the website 
 ## Presenting and deploying
 
 - `PRESENTATION_GUIDE.md`: a 3–4 minute script for the website, an explanation of every page, and likely questions with answers.
-- `DEPLOYMENT.md`: free hosting with the website on Vercel and the analytics API on Render (`render.yaml`).
+- `DEPLOYMENT.md`: free hosting of the website and analytics API as one Vercel project (`vercel.json`), with Render (`render.yaml`) as a backup.
 
 ## One-click Windows setup
 

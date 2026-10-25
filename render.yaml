@@ -1,4 +1,5 @@
-# Render blueprint for the analytics API (FastAPI). The website itself is deployed on Vercel.
+# BACKUP ONLY: the main deployment runs both website and API on Vercel (vercel.json).
+# Use this Render blueprint only if the API cannot run on Vercel.
 # See DEPLOYMENT.md for the step-by-step guide.
 services:
   - type: web

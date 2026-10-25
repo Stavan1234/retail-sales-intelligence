@@ -1,6 +1,8 @@
 import type { Filters } from "@/types/analytics";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://127.0.0.1:8000";
+// Locally (.env.local) this points at FastAPI on port 8000. On Vercel it is left unset, so requests go to
+// "/api/..." on the same domain, which vercel.json routes to the Python `api` service.
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "";
 
 export class ApiError extends Error {
   readonly status: number;

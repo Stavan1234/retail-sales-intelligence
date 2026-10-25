@@ -17,6 +17,10 @@ if not exist "backend\.venv\Scripts\python.exe" (
     pause
     exit /b 1
 )
+if not exist ".env.local" (
+    copy /y ".env.example" ".env.local" >nul
+    echo Created .env.local so the website talks to the local API.
+)
 if not exist "node_modules" (
     echo Installing website dependencies (first run only^)...
     call npm ci --no-audit --no-fund

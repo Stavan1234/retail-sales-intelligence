@@ -1,107 +1,80 @@
-# Deploying for free
+# Deploying for free on Vercel
 
-The project has two parts, and each goes to a free service that suits it:
+The whole project (website and Python analytics API) deploys as **one Vercel project** on the free Hobby plan. You need one website address, one account, and no environment variables.
 
-| Part | What it is | Where | Why there |
+## How it fits together
+
+`vercel.json` in the project root defines two **services** that share one domain:
+
+| Service | Folder | What it is | Public path |
 |---|---|---|---|
-| Website | Next.js (the pages you see) | **Vercel** (free Hobby plan) | Made by the creators of Next.js, so it works with no extra setup. |
-| Analytics API | FastAPI + pandas, SciPy, scikit-learn, statsmodels | **Render** (free web service) | These Python libraries are too large for Vercel's free serverless functions. Render runs a normal Python server. |
+| `web` | `.` (project root) | Next.js website | everything else (`/`, `/overview`, …) |
+| `api` | `backend/` | FastAPI analytics (pandas, SciPy, scikit-learn, statsmodels) | `/api/...` |
 
 ```text
-Visitor's browser ──► Vercel (website) ──► Render (analytics API, reads data/ from the repo)
+Browser ──► your-app.vercel.app/overview  ──► web (Next.js)
+Browser ──► your-app.vercel.app/api/...   ──► api (FastAPI)
 ```
 
-**One thing to know about the free Render plan:** the API goes to sleep after about 15 minutes with no visitors. The first visit after that takes **30–60 seconds** while it wakes up, and the site shows "Connecting…" during that time. Before presenting, open the site a couple of minutes early to wake it up.
+Both run on the same domain, so the website simply calls `/api/...`. There are no addresses to copy between services and no CORS settings.
 
-You need three free accounts: **GitHub**, **Render** and **Vercel**. You can sign in to Render and Vercel with your GitHub account.
+The `api` service is built from the `backend/` folder only, so it carries its own copy of the dataset in `backend/data/`. A test (`backend/tests/test_deployment_bundle.py`) checks that this copy is identical to `data/source/`.
 
 ---
 
 ## Step 1: Put the project on GitHub
 
-Both Render and Vercel deploy straight from a GitHub repository.
+The project is already a git repository with its first commit.
 
-1. Create a new **empty** repository on github.com, for example `retail-sales-intelligence`. Don't add a README or a .gitignore there.
-2. In a terminal in the project folder, run these commands. Replace `YOUR-NAME` with your GitHub username.
+1. On github.com, create a new **empty** repository called `retail-sales-intelligence`. Don't add a README.
+2. In the project folder, run these two commands. Replace `YOUR-NAME` with your GitHub username.
 
 ```bash
-git init
-git add .
-git commit -m "Retail Sales Intelligence: initial version"
-git branch -M main
 git remote add origin https://github.com/YOUR-NAME/retail-sales-intelligence.git
+```
+
+```bash
 git push -u origin main
 ```
 
-The `.gitignore` already keeps out `node_modules`, `.next`, the Python virtual environment and the `.env` files, so only the source code and the dataset are uploaded.
-
-If you prefer clicking to typing, **GitHub Desktop** does the same thing: *File → Add local repository → Publish repository*.
-
----
-
-## Step 2: Deploy the API on Render
-
-1. Go to **render.com** and sign in with GitHub.
-2. Click **New → Blueprint** and pick your repository. Render reads the `render.yaml` file in the project, which already sets:
-   - build: `pip install -r backend/requirements.txt`
-   - start: `uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
-   - Python 3.13.5 and the free plan
-3. Render asks for a value for **`FRONTEND_ORIGINS`**. For now, enter `http://localhost:3000`. You'll replace it with your Vercel address in Step 4.
-4. Click **Apply**. The first build takes a few minutes.
-5. When it shows **Live**, copy the address, for example `https://retail-sales-intelligence-api.onrender.com`.
-6. Check it works: open `https://<your-render-address>/api/health` in a browser. You should see `"status":"ok"` and `"rows":10194`.
-
----
-
-## Step 3: Deploy the website on Vercel
+## Step 2: Import it into Vercel
 
 1. Go to **vercel.com** and sign in with GitHub.
-2. Click **Add New → Project** and import your repository. Vercel detects **Next.js** automatically. Leave the build settings as they are.
-3. Open **Environment Variables** and add:
+2. Click **Add New → Project** and **Import** your repository.
+3. Vercel reads `vercel.json` and shows the two services (`web` and `api`). **Don't change any settings and don't add environment variables.**
+4. Click **Deploy** and wait a few minutes. The Python libraries take the longest to install.
+5. Open the address Vercel gives you, for example `https://retail-sales-intelligence.vercel.app`.
 
-   | Name | Value |
-   |---|---|
-   | `NEXT_PUBLIC_API_BASE_URL` | your Render address from Step 2, e.g. `https://retail-sales-intelligence-api.onrender.com` (no `/` at the end) |
+To check it worked:
+- `https://<your-address>/api/health` should show `"status":"ok"` and `"rows":10194`.
+- The sidebar should say **"Connected to the analytics API"**.
 
-4. Click **Deploy**. When it finishes, copy your site address, for example `https://retail-sales-intelligence.vercel.app`.
-
-If the build fails with a Node.js version message, open *Project → Settings → General → Node.js Version*, choose **24.x**, and redeploy. The project requires Node 24.
-
----
-
-## Step 4: Connect the two
-
-The API only answers requests from websites it trusts, as a security measure. Tell it about your Vercel address:
-
-1. In Render, open your service → **Environment** → edit `FRONTEND_ORIGINS`.
-2. Set it to your Vercel address. Keep localhost too, so `run.bat` still works:
-
-   ```text
-   https://retail-sales-intelligence.vercel.app,http://localhost:3000
-   ```
-
-3. Save. Render restarts the API automatically.
-4. Open your Vercel address. The sidebar should say **"Connected to the analytics API"** and the pages should fill with data.
+That's all. Every later `git push` redeploys automatically.
 
 ---
 
-## Updating the site later
+## Good to know
 
-Commit and push your changes:
-
-```bash
-git add .
-git commit -m "Describe what you changed"
-git push
-```
-
-Vercel and Render both redeploy automatically within a few minutes.
+- **First load can be slow.** When nobody has used the site for a while, the first request starts the Python function from cold, which can take several seconds. Open the site a minute before presenting.
+- **Size.** The Python libraries are about 430 MB, under Vercel's 500 MB limit for Python functions. Don't add large new packages to `backend/pyproject.toml`.
+- **Dependencies.** Vercel installs the `api` service's packages from `backend/pyproject.toml`. If you change a version there, change it in `backend/requirements.txt` too, because `setup.bat` and `run.bat` use that file.
+- **Local use is unchanged.** `run.bat` still runs everything on your computer. It uses `.env.local` to point the website at the API on port 8000.
 
 ## If something doesn't work
 
 | What you see | What to do |
 |---|---|
-| Sidebar says "Analytics API not reachable" | Wait one minute (the free server is waking up) and refresh. If it persists, open `<render-address>/api/health` to check the API is live. |
-| Browser console shows a **CORS** error | `FRONTEND_ORIGINS` on Render does not exactly match your Vercel address. Check `https://`, the spelling, and that there's no trailing `/`. |
-| Pages still try to call `127.0.0.1:8000` | `NEXT_PUBLIC_API_BASE_URL` was missing when Vercel built the site. Add it, then **Redeploy** (the value is baked in at build time). |
-| Render build fails while installing packages | Check that `PYTHON_VERSION` is `3.13.5` in the Render environment. |
+| Build fails in the `api` service with a size error | Check that no large packages were added to `backend/pyproject.toml`. If it still fails, use the backup option below. |
+| `/api/health` returns 404 | Make sure `vercel.json` is in the repository root and was pushed. Then redeploy. |
+| The site loads but the sidebar says "Analytics API not reachable" | Wait a few seconds and refresh (cold start). If it persists, open `/api/health` and check the `api` service's logs in the Vercel dashboard. |
+| You set `NEXT_PUBLIC_API_BASE_URL` in Vercel by mistake | Delete it and redeploy. On Vercel it must be empty, so the site calls its own `/api`. |
+
+## Backup option: API on Render
+
+If the `api` service can't run on Vercel (for example, if the size limit changes), the API can be hosted separately on Render's free plan using `render.yaml`:
+
+1. On render.com, choose **New → Blueprint**, select the repository, and set `FRONTEND_ORIGINS` to your Vercel address.
+2. In Vercel, add the environment variable `NEXT_PUBLIC_API_BASE_URL` with the Render address.
+3. Remove the `api` service and the `/api` rewrite from `vercel.json`.
+
+Only use this if the main approach fails.

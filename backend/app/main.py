@@ -11,17 +11,32 @@ from fastapi.middleware.cors import CORSMiddleware
 from .analytics.engine import AnalyticsEngine
 from .api.routes import router
 
-ROOT = Path(__file__).resolve().parents[2]
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+ROOT = BACKEND_DIR.parent
 DATA_DIR = ROOT / "data"
-WORKBOOK = DATA_DIR / "source" / "sample_-_superstore.xlsx"
+WORKBOOK_NAME = "sample_-_superstore.xlsx"
+
+
+def _workbook_path() -> Path:
+    """Prefer the repository's source workbook; fall back to the identical copy bundled with the backend.
+
+    On Vercel the `api` service is built from `backend/` alone, so only `backend/data/` is deployed.
+    A test keeps the two files byte-identical.
+    """
+    for candidate in (DATA_DIR / "source" / WORKBOOK_NAME, BACKEND_DIR / "data" / WORKBOOK_NAME):
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f"Dataset not found: {WORKBOOK_NAME}")
+
+
 PROCESSED = DATA_DIR / "processed" / "superstore_processed.csv"
-BACKEND_ENV = ROOT / "backend" / ".env"
+BACKEND_ENV = BACKEND_DIR / ".env"
 load_dotenv(BACKEND_ENV)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.analytics = AnalyticsEngine.from_paths(WORKBOOK, PROCESSED)
+    app.state.analytics = AnalyticsEngine.from_paths(_workbook_path(), PROCESSED)
     yield
 
 

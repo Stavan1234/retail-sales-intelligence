@@ -1,0 +1,125 @@
+{
+  "phase": "3",
+  "purpose": "Forecast analytical contract and historical reference.",
+  "verification_policy": "contract",
+  "model": "Holt-Winters Exponential Smoothing",
+  "history_months": 48,
+  "validation_months": 12,
+  "forecast_horizon_months": 6,
+  "seasonal_periods": 12,
+  "selected_model": {
+    "damped": false,
+    "seasonal": "add"
+  },
+  "uncertainty_method": "State-space simulation with bootstrap errors",
+  "contract": {
+    "historical_start": "2023-01",
+    "historical_end": "2026-12",
+    "forecast_start": "2027-01",
+    "forecast_end": "2027-06",
+    "selected_model_beats_seasonal_naive_on_mae": true,
+    "selected_model_beats_seasonal_naive_on_rmse": true,
+    "forecasts_non_negative": true,
+    "intervals_nested": true
+  },
+  "legacy_reference": {
+    "generated_in_environment": {
+      "statsmodels": "0.14.6"
+    },
+    "note": "Legacy numeric forecast values are preserved for historical comparison only and are not used as exact truth-gate assertions. statsmodels 0.15 can change numerical output for affected models.",
+    "forecast": [
+      {
+        "period": "2027-01",
+        "forecast": 51137.36495399341,
+        "lower80": 42964.499835095434,
+        "upper80": 64302.87820668036,
+        "lower95": 40296.74259876381,
+        "upper95": 70182.71366683219
+      },
+      {
+        "period": "2027-02",
+        "forecast": 43082.346728292425,
+        "lower80": 34849.68943238145,
+        "upper80": 56161.29233700997,
+        "lower95": 32534.498870560004,
+        "upper95": 62127.6954411312
+      },
+      {
+        "period": "2027-03",
+        "forecast": 77516.86360575487,
+        "lower80": 69343.9984868569,
+        "upper80": 90595.80921447242,
+        "lower95": 66969.01574802244,
+        "upper95": 96562.21231859365
+      },
+      {
+        "period": "2027-04",
+        "forecast": 62983.4787125296,
+        "lower80": 54750.82141661862,
+        "upper80": 76148.99196521656,
+        "lower95": 40724.65095490942,
+        "upper95": 82028.82742536838
+      },
+      {
+        "period": "2027-05",
+        "forecast": 70406.72165682886,
+        "lower80": 62174.06436091788,
+        "upper80": 83572.2349095158,
+        "lower95": 59858.87379909644,
+        "upper95": 89452.07036966764
+      },
+      {
+        "period": "2027-06",
+        "forecast": 67036.31409872802,
+        "lower80": 57787.24219672371,
+        "upper80": 79442.8813862167,
+        "lower95": 44777.48634110784,
+        "upper95": 86081.6628115668
+      }
+    ],
+    "validation": {
+      "selected": {
+        "damped": false,
+        "seasonal": "add",
+        "mae": 11021.313541110634,
+        "rmse": 14689.472676675277,
+        "smape": 19.35749470166731
+      },
+      "models": [
+        {
+          "damped": false,
+          "seasonal": "add",
+          "mae": 11021.313541110634,
+          "rmse": 14689.472676675277,
+          "smape": 19.35749470166731
+        },
+        {
+          "damped": true,
+          "seasonal": "add",
+          "mae": 11215.223561001467,
+          "rmse": 14926.775294965631,
+          "smape": 20.004447091508723
+        },
+        {
+          "damped": false,
+          "seasonal": "mul",
+          "mae": 13251.071859860946,
+          "rmse": 17580.510637017596,
+          "smape": 26.21197808668978
+        },
+        {
+          "damped": true,
+          "seasonal": "mul",
+          "mae": 14030.62571550934,
+          "rmse": 18334.172328203007,
+          "smape": 28.687653129981012
+        }
+      ],
+      "seasonal_naive": {
+        "mae": 15793.230016666668,
+        "rmse": 19440.50069654416,
+        "smape": 28.81417272637438
+      }
+    }
+  }
+}

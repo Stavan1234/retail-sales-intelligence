@@ -1,0 +1,76 @@
+{
+  "raw_columns": [
+    "Row ID",
+    "Order ID",
+    "Order Date",
+    "Ship Date",
+    "Ship Mode",
+    "Customer ID",
+    "Customer Name",
+    "Segment",
+    "Country/Region",
+    "City",
+    "State/Province",
+    "Postal Code",
+    "Region",
+    "Product ID",
+    "Category",
+    "Sub-Category",
+    "Product Name",
+    "Sales",
+    "Quantity",
+    "Discount",
+    "Profit"
+  ],
+  "derived_columns": [
+    "Year",
+    "Month",
+    "Month Name",
+    "Quarter",
+    "Day",
+    "Day of Week",
+    "Week",
+    "Profit Margin",
+    "Shipping Days",
+    "Order Month"
+  ],
+  "sheets": {
+    "Orders": {
+      "rows": 10194,
+      "columns": 21
+    },
+    "Returns": {
+      "rows": 296,
+      "columns": 2
+    },
+    "People": {
+      "rows": 4,
+      "columns": 2
+    }
+  },
+  "categorical_values": {
+    "Category": ["Furniture", "Office Supplies", "Technology"],
+    "Sub-Category": [
+      "Accessories",
+      "Appliances",
+      "Art",
+      "Binders",
+      "Bookcases",
+      "Chairs",
+      "Copiers",
+      "Envelopes",
+      "Fasteners",
+      "Furnishings",
+      "Labels",
+      "Machines",
+      "Paper",
+      "Phones",
+      "Storage",
+      "Supplies",
+      "Tables"
+    ],
+    "Region": ["Central", "East", "South", "West"],
+    "Segment": ["Consumer", "Corporate", "Home Office"],
+    "Ship Mode": ["First Class", "Same Day", "Second Class", "Standard Class"]
+  }
+}

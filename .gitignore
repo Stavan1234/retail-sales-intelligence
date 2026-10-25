@@ -1,0 +1,22 @@
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+backend/.venv/
+backend/.env
+.DS_Store
+Thumbs.db
+logs/*.log
+release/
+
+# Local backups and setup artefacts (not source)
+*.zip
+logs/*.json

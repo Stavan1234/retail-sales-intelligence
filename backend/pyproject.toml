@@ -1,0 +1,13 @@
+[project]
+name = "retail-sales-intelligence-backend"
+version = "1.0.0"
+requires-python = ">=3.13,<3.14"
+
+[project.optional-dependencies]
+test = [
+    "pytest==9.0.2",
+    "httpx2==2.13.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

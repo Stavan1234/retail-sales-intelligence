@@ -1,0 +1,16 @@
+# Render blueprint for the analytics API (FastAPI). The website itself is deployed on Vercel.
+# See DEPLOYMENT.md for the step-by-step guide.
+services:
+  - type: web
+    name: retail-sales-intelligence-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      # Set this in the Render dashboard to your Vercel address, e.g. https://your-app.vercel.app
+      - key: FRONTEND_ORIGINS
+        sync: false

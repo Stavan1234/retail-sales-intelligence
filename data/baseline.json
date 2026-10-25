@@ -1,0 +1,132 @@
+{
+  "phase": "0",
+  "purpose": "Frozen source-of-truth snapshot for the Retail Sales Intelligence project.",
+  "dataset": {
+    "orders_shape": [10194, 21],
+    "processed_shape": [10194, 31],
+    "returns_rows": 296,
+    "people_rows": 4,
+    "distinct_orders": 5111,
+    "distinct_customers": 804,
+    "distinct_products": 1862,
+    "total_sales": 2326534.3543,
+    "total_profit": 292296.8145999999,
+    "total_quantity": 38654,
+    "order_date_min": "2023-01-03",
+    "order_date_max": "2026-12-30",
+    "returns_unique_order_ids": 296,
+    "returns_rate_of_distinct_orders": 0.05791430248483663,
+    "missing_values_orders": 0,
+    "duplicate_rows_orders": 0,
+    "missing_values_processed": 0,
+    "duplicate_rows_processed": 0
+  },
+  "source_files": {
+    "excel": {
+      "path": "data/source/sample_-_superstore.xlsx",
+      "sha256": "11dca4b1f01903aa865a0a1e530c623b516a15e9c5d368f96066cef35d95fea0"
+    },
+    "processed_csv": {
+      "path": "data/processed/superstore_processed.csv",
+      "sha256": "7dc7d14afab57065d18d1fc024ad75caf856be6b82aeb2a39de4af20da16419f"
+    },
+    "notebook": {
+      "path": "notebooks/ADS_Mini_Project.ipynb",
+      "sha256": "33b9966355c6897302cdaf55af447576fb3ea233407d9888011f916985b7fbf2"
+    },
+    "master_plan": {
+      "path": "docs/reference/Retail_Sales_Analytics_Master_Project_Plan.md",
+      "sha256": "33ae57b1ec8c5a3bbb268fb703e1d39186bc936c240ba61b32f510b9edd8d65f"
+    },
+    "rendered_pdf_snapshot": {
+      "path": "docs/reference/ADS_Mini_Project_Rendered_Current.pdf",
+      "sha256": "f6ee72e29570a173a82869d1de0e8bfcf5a5c455f93ecfffe331bde2df654572"
+    }
+  },
+  "notebook_reference_results": {
+    "confidence_interval_mean_sales_95pct": {
+      "sample_size": 10194,
+      "mean_sales": 228.2259,
+      "standard_error": 6.1398,
+      "margin_of_error": 12.0352,
+      "lower_limit": 216.1906,
+      "upper_limit": 240.2611
+    },
+    "welch_t_test_consumer_vs_corporate_sales": {
+      "t_statistic": -0.7428,
+      "p_value": 0.457606,
+      "alpha": 0.05,
+      "decision": "Fail to Reject H0"
+    },
+    "one_way_anova_profit_by_category": {
+      "f_statistic": 55.1895,
+      "p_value": 0.0,
+      "alpha": 0.05,
+      "decision": "Reject H0"
+    },
+    "chi_square_segment_x_category": {
+      "chi_square": 1.8131,
+      "df": 4,
+      "p_value": 0.770084,
+      "alpha": 0.05,
+      "decision": "Fail to Reject H0"
+    },
+    "tukey_hsd_profit_by_category": [
+      {
+        "group1": "Furniture",
+        "group2": "Office Supplies",
+        "mean_difference": 11.6011,
+        "p_adj": 0.1077,
+        "reject": false
+      },
+      {
+        "group1": "Furniture",
+        "group2": "Technology",
+        "mean_difference": 69.6114,
+        "p_adj": 0.0,
+        "reject": true
+      },
+      {
+        "group1": "Office Supplies",
+        "group2": "Technology",
+        "mean_difference": 58.0104,
+        "p_adj": 0.0,
+        "reject": true
+      }
+    ],
+    "simple_linear_regression_quantity_to_sales": {
+      "training_samples": 8155,
+      "testing_samples": 2039,
+      "intercept": 19.49353907302705,
+      "quantity_coefficient": 54.02136431123193,
+      "mae": 266.3376,
+      "mse": 504020.3594,
+      "rmse": 709.9439,
+      "r2": 0.0345
+    },
+    "multiple_linear_regression_current_notebook": {
+      "features": ["Quantity", "Discount", "Category", "Sub-Category", "Region", "Segment"],
+      "encoded_feature_count": 25,
+      "training_samples": 8155,
+      "testing_samples": 2039,
+      "mae": 223.658,
+      "mse": 402935.8762,
+      "rmse": 634.7723,
+      "r2": 0.2281
+    },
+    "anomaly_detection_current_notebook": {
+      "iqr_sales_anomalies": 1183,
+      "zscore_sales_anomalies": 128,
+      "iqr_profit_anomalies": 1913,
+      "zscore_profit_anomalies": 109,
+      "isolation_forest_normal": 8584,
+      "isolation_forest_anomalies": 1610,
+      "isolation_forest_total": 10194
+    }
+  },
+  "known_scope_gaps": [
+    "The supplied notebook does not yet contain the complete time-series forecasting module.",
+    "The supplied rendered PDF ends before the complete anomaly/forecast work shown in the notebook.",
+    "The dataset contains order dates through 2026-12-30; this is a property of the supplied data and should not be silently changed."
+  ]
+}
